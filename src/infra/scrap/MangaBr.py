@@ -2,20 +2,15 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-import bs4
 import json
-import requests
-from unidecode import unidecode
 from scrap import Scrap
 from config.log.log import Log
 from infra.db.database import Database
 
 class MangaBr:
 	logger = None
-	# url = 'https://mangabr.net/manga/ao-ashi'
 
 	def __init__(self):
-		print('MangaBr')
 		self.logger = Log().initLog('mangaBr.log')
 		self.database = Database(database=False)
 	
@@ -34,9 +29,7 @@ class MangaBr:
 	
 	def extract_data(self, soup, url):
 		try:
-			print(f'Lista: {soup.find('div', class_='col-12 chapters-list')}')
 			if soup.find('div', class_='col-12 chapters-list') is None:
-				print('Chapter list not found') # Log para depuração
 				self.database.deactivateMangaSite(url)
 				Log().log(self.logger, 'warning', 'Chapter list not found')
 				return None
@@ -52,15 +45,12 @@ class MangaBr:
 				'url_ultimo_capitulo': f'https://mangabr.net{url_ultimo_capitulo}'
 			}
 		except Exception as e:
-			print('Exception occurred') # Log para depuração
 			Log().log(self.logger, 'error', f'Error: {e}')
 	
 	def format_data(self, data):
-		print('Format data')
 		print(json.dumps(data, indent=2))
 
 	def run(self, url):
-		# soup = self.get_data(self.url)
 		soup = Scrap(url).get_data()
 		if soup is None:
 			return None

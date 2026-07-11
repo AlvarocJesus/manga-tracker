@@ -15,7 +15,6 @@ class OldiSussy:
 	logger = None
 
 	def __init__(self):
-		print('OldiSussy')
 		self.logger = Log().initLog('oldiSussy.log')
 		self.scrap = Scrap()
 
@@ -23,10 +22,8 @@ class OldiSussy:
 
 	"""  url = 'https://www.amazon.com.br/Monitor-Gamer-AOC-FreeSync-Q27G2/dp/B0C6FHZW5C'
 	preço amazon
-	print(soup.title)
-	print(soup.find('span', class_="a-price").find('span', class_="a-offscreen")) """
 
-	""" def get_data(self, url):
+	def get_data(self, url):
 		try:
 			html = requests.get(url)
 			soup = bs4.BeautifulSoup(html.text, 'html.parser')
@@ -44,10 +41,6 @@ class OldiSussy:
 			titulo = soup.find('div', class_='post-title').find('h1').text.strip()
 			capitulo_recente = soup.find('ul', class_='main version-chap no-volumn').find_all('li')[0].find('a').text.strip().split(' ')[-1]
 			ultimo_capitulo_link = soup.find('ul', class_='main version-chap no-volumn').find_all('li')[0].find('a')['href']
-
-			print(f'Titulo: {titulo}')
-			print(f'Capitulo: {capitulo_recente}')
-			print(f'Link: {ultimo_capitulo_link}')
 
 			Log().log(self.logger, 'info', 'Data extracted successfully')
 			return { 'titulo': titulo, 'capitulo_mais_novo': capitulo_recente, 'ultimo_capitulo_link': ultimo_capitulo_link, 'total_capitulos': capitulo_recente }

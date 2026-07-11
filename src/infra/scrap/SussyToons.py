@@ -14,14 +14,11 @@ class SussyToons:
 	# url = 'https://api-dev.sussytoons.site/obras/847'
 	
 	def __init__(self):
-		print('SussyToons')
 		self.logger = Log().initLog('sussyToons.log')
 		self.scrap = Scrap()
 
 	def get_data(self, url):
 		try:
-			print('Getting data...')
-
 			headers = {
 				'Accept': 'application/json, text/plain, */*',
 				'Accept-Encoding': 'gzip, deflate, br, zstd',
@@ -58,20 +55,11 @@ class SussyToons:
 			print('Extracting data...')
 
 			titulo = soup['resultado']['obr_nome']
-			print(f'Titulo: {titulo}')
-
 			capitulo_recente = soup['resultado']['capitulos'][0]['cap_nome']
-			print(f'Capitulo Recente: {capitulo_recente}')
-
 			ultimo_capitulo_link = soup['resultado']['capitulos'][0]['cap_id']
-			print(f'URL: https://www.sussytoons.site/capitulo/{ultimo_capitulo_link}')
-
 			data_atualizacao = soup['resultado']['capitulos'][0]['cap_lancado_em']
-			print(f'Data atualizacao: {data_atualizacao}')
-
 			status_manga = soup['resultado']['status']['stt_nome']
-			print(f'Status manga: {status_manga}')
-
+			
 			Log().log(self.logger, 'info', 'Data retrieved successfully')
 			return { 'titulo': titulo, 'capitulo_mais_novo': capitulo_recente, 'ultimo_capitulo_link': 'https://www.sussytoons.site/capitulo/{ultimo_capitulo_link}', 'data_atualizacao': data_atualizacao, 'status_manga': status_manga }
 		except Exception as e:

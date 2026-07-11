@@ -10,28 +10,15 @@ import requests
 from unidecode import unidecode
 from config.log.log import Log
 from scrap import Scrap
+from infra.db.database import Database
 
 class MangaOnline:
 	logger = None
-	# url = 'https://mangaonline.blog/manga/solo-leveling-ragnarok/'
-	# url_chapters = 'https://mangaonline.blog/manga/solo-leveling-ragnarok/ajax/chapters/'
 
 	def __init__(self):
 		self.logger = Log().initLog('mangaOnline_blog.log')
-		self.scrap = Scrap()
-
-	""" def get_data(self, url):
-		try:
-			html = requests.get(url)
-			soup = bs4.BeautifulSoup(html.text, 'html.parser')
-
-			with open('teste.html', 'w', encoding='utf-8') as file:
-				file.write(soup.prettify())
-
-			Log().log(self.logger, 'info', 'Data retrieved successfully')
-			return soup
-		except Exception as e:
-			Log().log(self.logger, 'error', f'Error: {e}') """
+		# self.scrap = Scrap()
+		self.database = Database(database=False)
 	
 	def get_data_chapters(self, url_chapters):
 		try:
@@ -54,7 +41,7 @@ class MangaOnline:
 				'x-requested-with': 'XMLHttpRequest'
 			}
 
-			html = requests.post(url_chapters)
+			html = requests.post(url_chapters, headers=headers)
 			soup = bs4.BeautifulSoup(html.text, 'html.parser')
 
 			with open('teste_chapters.html', 'w', encoding='utf-8') as file:
@@ -68,16 +55,9 @@ class MangaOnline:
 	def extract_data(self, soup, soup_chapters):
 		try:
 			titulo = soup.find('div', class_='post-title').find('h1').text.strip()
-			# print(f'Titulo: {titulo}')
-			 
 			capitulo_recente = ' '.join(soup_chapters.find('ul', class_='main version-chap no-volumn').find_all('li')[0].find('a').text.strip().split(' ')[:2])
-			# print(f'Capitulo: {capitulo_recente}')
-			
 			ultimo_capitulo_link = soup_chapters.find('ul', class_='main version-chap no-volumn').find_all('li')[0].find('a')['href']
-			# print(f'Link: {ultimo_capitulo_link}')
-
 			data_atualizacao = soup_chapters.find('ul', class_='main version-chap no-volumn').find_all('li')[0].find_all('a')[-1]['title']
-			# print(f'Ultima atualiacao: {data_atualizacao}')
 
 			Log().log(self.logger, 'info', 'Data extracted successfully')
 			
@@ -93,12 +73,20 @@ class MangaOnline:
 	def format_data(self, data):
 		print(json.dumps(data, indent=4))
 
-	def run(self):
-		# soup = self.get_data(self.url)
-		soup = self.scrap.get_data(self.url)
-		soup_chapters = self.get_data_chapters(self.url_chapters)
+	def run(self, url, url_chapters):
+		soup = Scrap(url).get_data()
+		if soup is None:
+			return None
+
+		soup_chapters = self.get_data_chapters(url_chapters)
+		if soup_chapters is None:
+			return None
+		
 		data = self.extract_data(soup, soup_chapters)
+		if data is None:
+			return None
+
 		self.format_data(data)
 
 if __name__ == '__main__':
-	MangaOnline().run()
+	MangaOnline().run('https://mangaonline.blog/manga/solo-leveling-ragnarok/', 'https://mangaonline.blog/manga/solo-leveling-ragnarok/ajax/chapters/')

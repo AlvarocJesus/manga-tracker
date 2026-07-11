@@ -14,7 +14,6 @@ class Database:
 	logger = None
 	
 	def __init__(self, database=True):
-		print('Database')
 		self.logger = Log().initLog('database.log')
 		self.database = os.getenv('DATABASE_URL') if database else os.getenv('SQLITE_DATABASE_URL')
 

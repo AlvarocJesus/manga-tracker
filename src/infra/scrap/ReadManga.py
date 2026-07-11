@@ -34,13 +34,9 @@ class ReadManga:
 	def extract_data(self, soup):
 		try:
 			titulo = soup.find('div', class_='post-title').find('h1').text.strip()
-			print(f'Titulo: {titulo}')
 
 			# capitulo_recente = soup.find('ul', class_='main version-chap no-volumn').find_all('li')[0].find('a').text.strip().split(' ')[-1]
 			# ultimo_capitulo_link = soup.find('ul', class_='main version-chap no-volumn').find_all('li')[0].find('a')['href']
-
-			# print(f'Capitulo: {capitulo_recente}')
-			# print(f'Link: {ultimo_capitulo_link}')
 
 			Log().log(self.logger, 'info', 'Data extracted successfully')
 			# return { 'titulo': titulo, 'capitulo_mais_novo': capitulo_recente, 'ultimo_capitulo_link': ultimo_capitulo_link, 'total_capitulos': capitulo_recente }

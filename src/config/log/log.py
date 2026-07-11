@@ -8,7 +8,6 @@ class Log:
 	datefmt = ''
 	
 	def __init__(self):
-		print('Log')
 		self.encoding = 'utf-8'
 		self.level = logging.DEBUG
 		self.logFormat = '%(asctime)s | %(levelname)s | %(message)s'
@@ -32,7 +31,6 @@ class Log:
 		return logger
 	
 	def log(self, logger, level, msg):
-		print('def log')
 		match level:
 			case 'debug':
 				logger.debug(msg)
