@@ -1,0 +1,29 @@
+# 1. Controle de Versão
+.git
+.gitignore
+
+# 2. Ambientes Virtuais (Essencial com o uv)
+.venv/
+venv/
+env/
+
+# 3. Cache do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# 4. Arquivos de Ambiente (Segurança de Credenciais)
+.env
+*.env
+
+# 5. Pastas de Volumes Mapeadas no docker-compose
+db/
+uptime-kuma/
+adminer/
+
+# 6. IDEs e Arquivos de Sistema
+.vscode/
+.idea/
+.DS_Store

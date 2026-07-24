@@ -1,0 +1,62 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: db
+    env_file:
+      - .env
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    networks:
+      - manga_network
+
+  scraper:
+    image: scraper
+    build: .
+    container_name: scraper_mangas
+    depends_on:
+      - db
+    networks:
+      - manga_network
+  
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    restart: always
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./uptime-kuma:/app/data
+    environment:
+      - TZ=America/Sao_Paulo
+      - UMASK=0022
+    networks:
+      - manga_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 5s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  adminer:
+    image: adminer:latest
+    container_name: manga_tracker_adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    volumes:
+      - ./adminer/adminer.css:/var/www/html/adminer.css:ro
+    networks:
+      - manga_network
+
+networks:
+  manga_network:
+    driver: bridge
